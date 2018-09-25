@@ -24,19 +24,8 @@ RUN        bash /tmp/env-config.sh
 #
 # This layer is populated with up-to-date files from
 # Calypso development.
-#
-# If package.json and npm-shrinkwrap are unchanged,
-# `install-if-deps-outdated` should require no action.
-# However, time is being spent in the build step on
-# `install-if-deps-outdated`. This is because in the
-# following COPY, the npm-shrinkwrap mtime is being
-# updated, which is confusing `install-if-deps-outdated`.
-# Touch after copy to ensure that this layer will
-# not trigger additional install as part of the build
-# in the following step.
 COPY       . /calypso/
 RUN        npm ci --only=production
-RUN        touch node_modules
 
 # Build the final layer
 #
