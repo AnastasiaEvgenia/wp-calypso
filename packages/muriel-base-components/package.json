@@ -1,13 +1,13 @@
 {
   "name": "muriel-base-components",
   "version": "1.0.0",
-  "description": "",
+  "description": "The Muriel Base Components",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "dependencies": {
 	  "react": "^16.5.0"
   },
   "keywords": [],
-  "author": "Ben Lowery <ben@blowery.org> (http://b19y.com)",
-  "license": "ISC"
+  "author": "Ben Lowery <ben.lowery@automattic.com> (https://automattic.com)",
+  "license": "GPL-2.0+"
 }
