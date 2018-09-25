@@ -1,1 +1,1 @@
-export { default as Frobber } from './frobber';
+export { default as Button } from './button';

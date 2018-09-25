@@ -1,5 +1,5 @@
 {
-  "name": "muriel-base-components",
+  "name": "@automattic/muriel-base-components",
   "version": "1.0.0",
   "description": "The Muriel Base Components",
   "main": "dist/cjs/index.js",
