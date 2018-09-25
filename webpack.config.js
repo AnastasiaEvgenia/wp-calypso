@@ -195,7 +195,7 @@ function getWebpackConfig( { cssFilename, externalizeWordPressPackages = false }
 								includePaths: [ path.join( __dirname, 'client' ) ],
 								data: `@import '${ path.join(
 									__dirname,
-									'assets/stylesheets/shared/_utils.scss'
+									'assets', 'stylesheets', 'shared', '_utils.scss'
 								) }';`,
 							},
 						},
