@@ -84,9 +84,10 @@ export function toApi( state ) {
 	return Object.assign(
 		{},
 		{ importerId, progress },
-		{ importStatus: appStateToApi( importerState ) },
+		{ importStatus: importerState ? appStateToApi( importerState ) : {} },
 		site && site.ID ? { siteId: site.ID } : {},
-		type && { type: type.replace( 'importer-type-', '' ) },
+		{ type: 'wordpress' },
+		// type && { type: type.replace( 'importer-type-', '' ) },
 		customData ? { customData: replaceUserInfoWithIds( customData ) } : {}
 	);
 }

@@ -7,8 +7,9 @@
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
 import React from 'react';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { flowRight, includes, noop } from 'lodash';
+import { flow, flowRight, includes, noop } from 'lodash';
 import Gridicon from 'gridicons';
 
 /**
@@ -20,6 +21,7 @@ import Button from 'components/forms/form-button';
 import DropZone from 'components/drop-zone';
 import ProgressBar from 'components/progress-bar';
 import { connectDispatcher } from './dispatcher-converter';
+import { getImporterOption } from 'state/ui/importers/selectors';
 
 class UploadingPane extends React.PureComponent {
 	static displayName = 'SiteSettingsUploadingPane';
@@ -28,7 +30,7 @@ class UploadingPane extends React.PureComponent {
 		description: PropTypes.oneOfType( [ PropTypes.node, PropTypes.string ] ),
 		importerStatus: PropTypes.shape( {
 			filename: PropTypes.string,
-			importerState: PropTypes.string.isRequired,
+			// importerState: PropTypes.string.isRequired,
 			percentComplete: PropTypes.number,
 		} ),
 	};
@@ -42,9 +44,12 @@ class UploadingPane extends React.PureComponent {
 	getMessage = () => {
 		const { importerState, percentComplete = 0, filename } = this.props.importerStatus;
 
+		console.log( importerState );
+
 		switch ( importerState ) {
 			case appStates.READY_FOR_UPLOAD:
 			case appStates.UPLOAD_FAILURE:
+			case undefined:
 				return <p>{ this.props.translate( 'Drag a file here, or click to upload a file' ) }</p>;
 
 			case appStates.UPLOADING:
@@ -101,7 +106,9 @@ class UploadingPane extends React.PureComponent {
 		const { importerState } = this.props.importerStatus;
 		const { READY_FOR_UPLOAD, UPLOAD_FAILURE } = appStates;
 
-		return includes( [ READY_FOR_UPLOAD, UPLOAD_FAILURE ], importerState );
+		console.log( 'isReadyForImport', importerState );
+
+		return ! importerState || includes( [ READY_FOR_UPLOAD, UPLOAD_FAILURE ], importerState );
 	};
 
 	openFileSelector = () => {
@@ -111,7 +118,16 @@ class UploadingPane extends React.PureComponent {
 	};
 
 	startUpload = file => {
-		const { startUpload } = this.props;
+		const { importerOption, startUpload } = this.props;
+
+		console.log( this.props.importerStatus );
+
+		// Make sure we have type,
+		// either from importerOption or importerStatus (preferred)
+		const importerData = {
+			type: importerOption,
+			...this.props.importerStatus,
+		};
 
 		if ( window.chrome && window.chrome.webstore ) {
 			/**
@@ -125,9 +141,9 @@ class UploadingPane extends React.PureComponent {
 			 * @see https://bugs.chromium.org/p/chromium/issues/detail?id=631877
 			 */
 			const newFile = new File( [ file.slice( 0, file.size ) ], file.name, { type: file.type } );
-			startUpload( this.props.importerStatus, newFile );
+			startUpload( importerData, newFile );
 		} else {
-			startUpload( this.props.importerStatus, file );
+			startUpload( importerData, file );
 		}
 	};
 
@@ -165,4 +181,10 @@ const mapDispatchToProps = dispatch => ( {
 	),
 } );
 
-export default connectDispatcher( null, mapDispatchToProps )( localize( UploadingPane ) );
+export default flow(
+	connect( state => ( {
+		importerOption: getImporterOption( state ),
+	} ) ),
+	connectDispatcher( null, mapDispatchToProps ),
+	localize
+)( UploadingPane );

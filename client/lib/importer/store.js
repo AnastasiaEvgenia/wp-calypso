@@ -111,6 +111,10 @@ const ImporterStore = createReducerStore( function( state, payload ) {
 			};
 		}
 		case IMPORTS_UPLOAD_COMPLETED:
+			console.log( {
+				oldImporterId: action.importerId,
+				newImporterId: action.importerStatus.importerId,
+			} );
 			return {
 				...state,
 				importers: {
@@ -192,19 +196,24 @@ const ImporterStore = createReducerStore( function( state, payload ) {
 			};
 		}
 		case IMPORTS_UPLOAD_SET_PROGRESS:
+			console.log( IMPORTS_UPLOAD_SET_PROGRESS, action );
 			return {
 				...state,
 				importers: {
 					...state.importers,
-					[ action.importerId ]: {
-						...getImporterItemById( state, action.importerId ),
-						percentComplete:
-							( action.uploadLoaded / ( action.uploadTotal + Number.EPSILON ) ) * 100,
-					},
+					...( action.importerId && {
+						[ action.importerId ]: {
+							...getImporterItemById( state, action.importerId ),
+							percentComplete:
+								( action.uploadLoaded / ( action.uploadTotal + Number.EPSILON ) ) * 100,
+						},
+					} ),
 				},
 			};
 
 		case IMPORTS_IMPORT_START:
+			// Can we use only importerType? that could come from the importerOption
+			console.log( IMPORTS_IMPORT_START, action );
 			return {
 				...state,
 				count: get( state, 'count', 0 ) + 1,
@@ -213,6 +222,7 @@ const ImporterStore = createReducerStore( function( state, payload ) {
 					[ action.importerId ]: {
 						importerId: action.importerId,
 						type: action.importerType,
+						//
 						importerState: appStates.READY_FOR_UPLOAD,
 						site: { ID: action.siteId },
 					},
@@ -220,6 +230,7 @@ const ImporterStore = createReducerStore( function( state, payload ) {
 			};
 
 		case IMPORTS_START_IMPORTING:
+			console.log( IMPORTS_START_IMPORTING, action );
 			return {
 				...state,
 				importers: {
@@ -232,15 +243,18 @@ const ImporterStore = createReducerStore( function( state, payload ) {
 			};
 
 		case IMPORTS_UPLOAD_START:
+			console.log( IMPORTS_UPLOAD_START, action );
 			return {
 				...state,
 				importers: {
 					...state.importers,
-					[ action.importerId ]: {
-						...getImporterItemById( state, action.importerId ),
-						importerState: appStates.UPLOADING,
-						filename: action.filename,
-					},
+					...( action.importerId && {
+						[ action.importerId ]: {
+							...getImporterItemById( state, action.importerId ),
+							importerState: appStates.UPLOADING,
+							filename: action.filename,
+						},
+					} ),
 				},
 			};
 

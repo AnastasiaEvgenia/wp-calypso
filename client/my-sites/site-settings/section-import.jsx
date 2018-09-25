@@ -205,6 +205,8 @@ class SiteSettingsImport extends Component {
 			return this.renderIdleImporters( site, siteTitle, appStates.DISABLED );
 		}
 
+		console.log( { imports } );
+
 		const activeImporter = flow(
 			// Pick only imports for the current site
 			items => filterImportsForSite( site.ID, items ),

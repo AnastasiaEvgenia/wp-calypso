@@ -33,8 +33,6 @@ import {
 import { appStates } from 'state/imports/constants';
 import { fromApi, toApi } from './common';
 
-const ID_GENERATOR_PREFIX = 'local-generated-id-';
-
 /*
  * The following `order` functions prepare objects that can be
  * sent to the API to accomplish a specific purpose. Instead of
@@ -84,6 +82,11 @@ function receiveImporterStatus( importerStatus ) {
 }
 
 export function cancelImport( siteId, importerId ) {
+	if ( ! importerId ) {
+		console.log( 'cancelImport, nothing to cancel' );
+		return;
+	}
+
 	lockImport( importerId );
 
 	Dispatcher.handleViewAction( {
@@ -94,9 +97,9 @@ export function cancelImport( siteId, importerId ) {
 
 	// Bail if this is merely a local importer object because
 	// there is nothing on the server-side to cancel
-	if ( includes( importerId, ID_GENERATOR_PREFIX ) ) {
-		return;
-	}
+	// if ( includes( importerId, ID_GENERATOR_PREFIX ) ) {
+	// 	return;
+	// }
 
 	apiStart();
 	wpcom
@@ -172,18 +175,6 @@ export const setUploadProgress = ( importerId, data ) => ( {
 	uploadTotal: data.uploadTotal,
 	importerId,
 } );
-
-export const startImport = ( siteId, importerType ) => {
-	// Use a fake ID until the server returns the real one
-	const importerId = `${ ID_GENERATOR_PREFIX }${ Math.round( Math.random() * 10000 ) }`;
-
-	return {
-		type: IMPORTS_IMPORT_START,
-		importerId,
-		importerType,
-		siteId,
-	};
-};
 
 export function startImporting( importerStatus ) {
 	const {

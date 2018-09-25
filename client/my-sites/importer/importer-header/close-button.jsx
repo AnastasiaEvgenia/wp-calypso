@@ -18,16 +18,17 @@ import { appStates } from 'state/imports/constants';
 import { cancelImport } from 'lib/importer/actions';
 import { recordTracksEvent } from 'state/analytics/actions';
 import { deselectImporterOption } from 'state/ui/importers/actions';
+import { getImporterOption } from 'state/ui/importers/selectors';
 
 export class CloseButton extends React.PureComponent {
 	static displayName = 'CloseButton';
 
 	static propTypes = {
-		importerStatus: PropTypes.shape( {
-			importerId: PropTypes.string.isRequired,
-			importerState: PropTypes.string.isRequired,
-			type: PropTypes.string.isRequired,
-		} ),
+		// importerStatus: PropTypes.shape( {
+		// 	importerId: PropTypes.string.isRequired,
+		// 	importerState: PropTypes.string.isRequired,
+		// 	type: PropTypes.string.isRequired,
+		// } ),
 		site: PropTypes.shape( {
 			ID: PropTypes.number.isRequired,
 		} ),
@@ -38,8 +39,12 @@ export class CloseButton extends React.PureComponent {
 		const {
 			importerStatus: { importerId, type },
 			site: { ID: siteId },
+			importerOption,
 		} = this.props;
-		const tracksType = type.endsWith( 'site-importer' ) ? type + '-wix' : type;
+
+		const tracksType = ( type || importerOption ).endsWith( 'site-importer' )
+			? type + '-wix'
+			: type;
 
 		this.props.deselectImporterOption();
 		cancelImport( siteId, importerId );
@@ -75,10 +80,12 @@ export class CloseButton extends React.PureComponent {
 
 export default flow(
 	connect(
-		null,
+		state => ( {
+			importerOption: getImporterOption( state ),
+		} ),
 		{
 			deselectImporterOption,
-			recordTracksEvent
+			recordTracksEvent,
 		}
 	),
 	localize

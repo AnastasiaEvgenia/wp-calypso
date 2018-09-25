@@ -13,6 +13,7 @@ import React from 'react';
  */
 import FileImporter from './file-importer';
 import InlineSupportLink from 'components/inline-support-link';
+import { WORDPRESS } from 'state/imports/constants';
 
 /**
  * Module variables
@@ -28,7 +29,7 @@ class ImporterWordPress extends React.PureComponent {
 	static propTypes = {
 		importerStatus: PropTypes.shape( {
 			filename: PropTypes.string,
-			importerState: PropTypes.string.isRequired,
+			// importerState: PropTypes.string.isRequired,
 			errorData: PropTypes.shape( {
 				type: PropTypes.string.isRequired,
 				description: PropTypes.string.isRequired,
@@ -66,7 +67,9 @@ class ImporterWordPress extends React.PureComponent {
 			}
 		);
 
-		return <FileImporter importerData={ importerData } { ...this.props } />;
+		return (
+			<FileImporter importerData={ importerData } importerType={ WORDPRESS } { ...this.props } />
+		);
 	}
 }
 

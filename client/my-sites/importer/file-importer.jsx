@@ -52,7 +52,7 @@ export default class extends React.PureComponent {
 				description: PropTypes.string.isRequired,
 			} ),
 			filename: PropTypes.string,
-			importerState: PropTypes.string.isRequired,
+			// importerState: PropTypes.string.isRequired,
 			percentComplete: PropTypes.number,
 			siteTitle: PropTypes.string.isRequired,
 			statusMessage: PropTypes.string,
@@ -60,7 +60,7 @@ export default class extends React.PureComponent {
 	};
 
 	render() {
-		const { title, icon, description, uploadDescription } = this.props.importerData;
+		const { title, icon, description, importerType, uploadDescription } = this.props.importerData;
 		const site = this.props.site;
 		const state = this.props.importerStatus,
 			isEnabled = appStates.DISABLED !== state.importerState,
@@ -68,6 +68,14 @@ export default class extends React.PureComponent {
 				'is-compact': includes( compactStates, state.importerState ),
 				'is-disabled': ! isEnabled,
 			} );
+
+		console.log( { state } );
+
+		if ( ! state.importerState ) {
+			// state.importerState = {
+			// 	WORDPRESS
+			// }
+		}
 
 		return (
 			<Card className={ cardClasses }>
@@ -81,7 +89,7 @@ export default class extends React.PureComponent {
 				{ includes( importingStates, state.importerState ) && (
 					<ImportingPane importerStatus={ state } sourceType={ title } { ...{ site } } />
 				) }
-				{ includes( uploadingStates, state.importerState ) && (
+				{ ( ! state.importerState || includes( uploadingStates, state.importerState ) ) && (
 					<UploadingPane description={ uploadDescription } importerStatus={ state } />
 				) }
 			</Card>

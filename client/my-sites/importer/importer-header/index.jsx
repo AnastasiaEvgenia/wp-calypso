@@ -40,10 +40,10 @@ class ImporterHeader extends React.PureComponent {
 	static displayName = 'ImporterHeader';
 
 	static propTypes = {
-		importerStatus: PropTypes.shape( {
-			importerState: PropTypes.string.isRequired,
-			type: PropTypes.string.isRequired,
-		} ),
+		// importerStatus: PropTypes.shape( {
+		// 	importerState: PropTypes.string.isRequired,
+		// 	type: PropTypes.string.isRequired,
+		// } ),
 		description: PropTypes.string.isRequired,
 		icon: PropTypes.string.isRequired,
 		title: PropTypes.string.isRequired,
@@ -63,7 +63,7 @@ class ImporterHeader extends React.PureComponent {
 			return DoneButton;
 		}
 
-		return null;
+		return CloseButton;
 	}
 
 	render() {
