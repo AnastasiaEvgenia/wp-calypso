@@ -125,6 +125,21 @@ commands:
       - run: *setup-results-and-artifacts
 
 jobs:
+  build-jetpack-blocks:
+    <<: *defaults
+    parallelism: 1
+    steps:
+      - setup
+      - run:
+          name: Build Jetpack Blocks
+          command: |
+            NODE_ENV=production npm run sdk --              \
+              gutenberg                                     \
+              client/gutenberg/extensions/presets/jetpack   \
+              --output-dir=$CIRCLE_ARTIFACTS/jetpack-blocks
+      - store_artifacts:
+          path: /tmp/test_results
+
   lint-and-translate:
     <<: *defaults
     parallelism: 1
@@ -291,6 +306,7 @@ workflows:
   version: 2
   calypso:
     jobs:
+      - build-jetpack-blocks
       - lint-and-translate
       - test-client
       - test-server
